@@ -26,17 +26,18 @@ var _ Logger = (*tmLogger)(nil)
 // that underlying logger could be swapped with something else.
 func NewTMLogger(w io.Writer) Logger {
 	// Color by level value
+	fmt.Println("BLUE TENDERMINT")
 	colorFn := func(keyvals ...interface{}) term.FgBgColor {
 		if keyvals[0] != kitlevel.Key() {
 			panic(fmt.Sprintf("expected level key to be first, got %v", keyvals[0]))
 		}
 		switch keyvals[1].(kitlevel.Value).String() {
 		case "debug":
-			return term.FgBgColor{Fg: term.DarkGray}
+			return term.FgBgColor{Fg: term.Blue}
 		case "error":
-			return term.FgBgColor{Fg: term.Red}
+			return term.FgBgColor{Fg: term.Blue}
 		default:
-			return term.FgBgColor{}
+			return term.FgBgColor{Fg: term.Blue}
 		}
 	}
 
@@ -52,7 +53,6 @@ func NewTMLoggerWithColorFn(w io.Writer, colorFn func(keyvals ...interface{}) te
 // Info logs a message at level Info.
 func (l *tmLogger) Info(msg string, keyvals ...interface{}) {
 	lWithLevel := kitlevel.Info(l.srcLogger)
-
 	if err := kitlog.With(lWithLevel, msgKey, msg).Log(keyvals...); err != nil {
 		errLogger := kitlevel.Error(l.srcLogger)
 		kitlog.With(errLogger, msgKey, msg).Log("err", err) //nolint:errcheck // no need to check error again
